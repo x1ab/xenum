@@ -5,12 +5,17 @@
 	using namespace std;
 
 void f() {
-	cout << MyEnum_v("Fifty") << endl;
-	cout << MyEnum_cstr(/*MyEnum::*/OneMore) << endl; // MyEnum_cstr is not scoped.
 
-	cout << (int)Enum2_v("one") << endl; // C++ bullshit: Scoped enums don't << by default. :-/
-	cout << Enum2_cstr(Enum2::two) << endl; // Enum2 is scoped (enum class), qualif. required!
+	cout << "Plain enum:\n";
 
-	cout << "- invalid str. to val.: " << (int)Enum2_v("Invalid!") << endl; // Should return 0 (... which is debatable, of course!)
-	cout << "- invalid val. to str.: " << Enum2_cstr(-999) << endl; // Should compile, and return ""
+	cout <<"\t"<< MyEnum_v("Fifty") << endl;
+	cout <<"\t"<< MyEnum_cstr(/*MyEnum::*/OneMore) << endl; // MyEnum_cstr is not scoped.
+	cout <<"\t"<< "- invalid str. to val. (should be 0): " << MyEnum_v("Invalid!") << endl;
+
+	cout << "Enum class:\n";
+
+	cout <<"\t"<< (int)Enum2_v("one") << endl; // C++ bullshit: Scoped enums don't << by default. :-/
+	cout <<"\t"<< Enum2_cstr(Enum2::two) << endl; // Enum2 is scoped (enum class), qualif. required!
+	cout <<"\t"<< "- invalid str. to val. (should be -1): " << (int)Enum2_v("Invalid!") << endl;
+	cout <<"\t"<< "- invalid val. to str. (should be empty): " << Enum2_cstr(-999) << endl; // Should compile, and return ""
 }
