@@ -1,4 +1,4 @@
-#include "enumfactory.h"
+#include "xenum.h"
 
 #define Enum2(X)	\
 	X(one)	\
