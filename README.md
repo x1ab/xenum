@@ -1,9 +1,14 @@
-﻿# Minimal-code-cost stringified C/C++ enums
+﻿# Minimalist stringified C++ enums
 
 
-There are infinitely many implementations of this (because the built-in C/C++ enums
-are horrible); this one is optimized for minimal complexity (i.e. very fast & almost
-dependency-free build), at the expense of somewhat clunky (but still manageable) syntax.
+There are infinitely many implementations of enum stringification (because the built-in C++
+enums are horrible); this one is optimized for ridiculously frugal implementation, with
+minimal compilation complexity (i.e. extremely fast & almost dependency-free build), at
+the expense of somewhat clunky (but still manageable) syntax.
+
+Supports bidirectional conv.: both enum-to-string (`const char*`) and string-to-enum.
+(Not from `std::string`, because `<string_view>` is an obscenely heavy header nowadays;
+not adding it by default just for some convenience.)
 
 
 ## Usage
@@ -19,9 +24,14 @@ dependency-free build), at the expense of somewhat clunky (but still manageable)
 	// Access:
 
 	cout << MyEnum::First << "\n";
-	cout << MyEnum_v("Second") << "\n";
 	cout << MyEnum_cstr(Fifty) << "\n"; // Or MyEnum_cstr(MyEnum::Fifty) with XENUM_CLASS.
+	cout << MyEnum_v("Second") << "\n";
 ```
+
+The smoke-test examples compile just fine even with C++11 (Clang/GCC), and C++17
+with MSVC (it doesn't recognize `-std:c++11`), BUT: `__VA_OPT__` in the macros,
+and `using enum` in the converter functions actually requires C++20! (And presumably
+`-Zc:preprocessor` for MSVC.)
 
 ------------------------------------------------------------------------------
 
@@ -34,7 +44,7 @@ The generated code would be sg. like this:
 
 	inline const char* MyEnum_cstr(auto value) {
 		using enum MyEnum;
-		switch(value) {
+		switch (static_cast<EnumTypeName>(value)) {
 			case First: return "First";
 			case Second: return "Second";
 			case Fifty: return "Fifty";
@@ -51,19 +61,23 @@ The generated code would be sg. like this:
 	}
 ```
 
+#### NOTE:
+
+- Since C++20 is already required, I've used `auto` instead of the fixed enum type
+for the enum params (notably in `<MyEnum>_cstr`), and an explicit static cast, to
+allow supplying computed values (like `Flag1 | Flag2`) without the tedious casting
+C++ would otherwise require in that context.
+
+
 ------------------------------------------------------------------------------
 
 Based on: https://stackoverflow.com/a/202511/1479945 (by @Suma)
 
 This one compiles on a piece of wood (unlike e.g. the finicky magic_enum.hpp);
-it's still almost plain C, requiring only string.h (unlike the heavy ad-hoc
-C++ parser cited e.g. in Debdatta Basu's example (https://stackoverflow.com/a/23404302/1479945), 
-which doesn't even achieve all that much more in the end).
-
-The smoke-test examples compile just fine with C++11 with Clang/GCC, and C++17
-with MSVC (it doesn't recognize `-std:c++11`), BUT: `__VA_OPT__` in the macros
-actually requires C++20 (and even `-Zc:preprocessor` for MSVC)!
-
+it's still almost plain C, requiring only string.h (unlike e.g. the heavy ad-hoc
+C++ parser solution seen in Debdatta Basu's example (at https://stackoverflow.com/a/23404302/1479945)
+with the opposite priorities: very ergonomic usage syntax, but pretty decadent,
+YOLO build- and runtime costs).
 
 Changes to the original:
 

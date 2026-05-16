@@ -1,4 +1,4 @@
-/* v0.2
+/* v0.5
 	#include "xenum.h"
 
 	#define MyEnum(X)	\
@@ -36,15 +36,15 @@
 #define _xenum_DEFINE_ACCESSORS(EnumTypeName) \
 	inline const char* EnumTypeName##_cstr(auto value) { \
 		using enum EnumTypeName; \
-		switch(value) { \
+		switch (static_cast<EnumTypeName>(value)) { \
 			EnumTypeName(_xenum_ENUM_CASE) \
-			default: return ""; /*!! Do some actual error handling here!... !!*/ \
+			default: return ""; \
 		} \
 	} \
 	inline auto EnumTypeName##_v(const char *str) { \
 		using enum EnumTypeName; \
 		EnumTypeName(_xenum_ENUM_STRCMP) \
-		return (EnumTypeName)0; /*!! Do some actual error handling here!... !!*/ \
+		return static_cast<EnumTypeName>(0); /*!!?? Any better idea?... !!*/ \
 	} \
 
 // Enum element def.:
