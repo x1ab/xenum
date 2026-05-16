@@ -1,52 +1,67 @@
-﻿#ifndef _enumfactory_h_
-#define _enumfactory_h_
+/*
+	#include "enumfactory.h"
+
+	#define MyEnum(X)	\
+		X(First)	\
+		X(Second)	\
+		X(WithValue, 50)	\
+		X(OneMore,   100)	\
+
+	DEFINE_ENUM(MyEnum);
+*/
+
+#ifndef ENUD47GYN5WYWT78C468UY0348UY899YC0R70MH87GN7GB5D43A
+#define ENUD47GYN5WYWT78C468UY0348UY899YC0R70MH87GN7GB5D43A
+
 
 #include <string.h>
 
 //
-// Single-point-of-entry dispatcher
+// API...
 //
-#define DEFINE_ENUM(ENUM_NAME) \
+
+#define DEFINE_ENUM(EnumTypeName) \
  \
-	DEFINE_THE_ENUM_TYPE(ENUM_NAME) \
-	DEFINE_ACCESSORS(ENUM_NAME) \
+	_enumf_DEFINE_THE_ENUM_TYPE(EnumTypeName) \
+	_enumf_DEFINE_ACCESSORS(EnumTypeName) \
 
 //
-// Stuff to build
-//
-#define DEFINE_THE_ENUM_TYPE(ENUM_NAME) \
-  enum ENUM_NAME { \
-    ENUM_NAME(__ENUM_VALUE) \
-  }; \
-
-#define DEFINE_ACCESSORS(ENUM_NAME) \
-  inline const char *Get##ENUM_NAME##Name(ENUM_NAME value) \
-  { \
-    switch(value) \
-    { \
-      ENUM_NAME(__ENUM_CASE) \
-      default: return ""; /* handle input error */ \
-    } \
-  } \
-  inline ENUM_NAME Get##ENUM_NAME##Value(const char *str) \
-  { \
-    ENUM_NAME(__ENUM_STRCMP) \
-    return (ENUM_NAME)0; /* handle input error */ \
-  } \
-
-
-//
-// Internal helpers
+// Impl...
 //
 
-// expansion macro for enum value definition
-#define __ENUM_VALUE(name,assign) name assign,
+#define _enumf_DEFINE_THE_ENUM_TYPE(EnumTypeName) \
+	enum EnumTypeName { \
+		EnumTypeName(_enumf_ENUM_VALUE) \
+	}; \
 
-// expansion macro for enum to string conversion
-#define __ENUM_CASE(name,assign) case name: return #name;
+#define _enumf_DEFINE_ACCESSORS(EnumTypeName) \
+	inline const char* EnumTypeName##_cstr(EnumTypeName value) \
+	{ \
+		switch(value) \
+		{ \
+			EnumTypeName(_enumf_ENUM_CASE) \
+			default: return ""; /* handle input error */ \
+		} \
+	} \
+	inline EnumTypeName EnumTypeName##_v(const char *str) \
+	{ \
+		EnumTypeName(_enumf_ENUM_STRCMP) \
+		return (EnumTypeName)0; /* handle input error */ \
+	} \
 
-// expansion macro for string to enum conversion
-#define __ENUM_STRCMP(name,assign) if (!strcmp(str,#name)) return name;
+
+//
+// Impl. helpers...
+//
+
+// Enum value definition
+#define _enumf_ENUM_VALUE(name,...) name __VA_OPT__(= __VA_ARGS__),
+
+// Symbol to string
+#define _enumf_ENUM_CASE(name,...) case name: return #name;
+
+// String to symbol
+#define _enumf_ENUM_STRCMP(name,...) if (!strcmp(str,#name)) {return name;}
 
 
-#endif //_enumfactory_h_
+#endif // ENUD47GYN5WYWT78C468UY0348UY899YC0R70MH87GN7GB5D43A

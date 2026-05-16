@@ -1,9 +1,11 @@
 ﻿Based on: https://stackoverflow.com/a/202511/1479945 (by @Suma)
 
-This one compiles on a piece of wood (unlike e.g. the finicky magic_enum.hpp),
-it's just plain C. And requires basically nothing (unlike e.g. Debdatta Basu's
-stringizer, that can't even do more than that). Nice.
-(Examples test-compiled cleanly with c++11, c++17.)
+This one compiles on a piece of wood (unlike e.g. the finicky magic_enum.hpp);
+it's basically still just plain C, requiring only string.h. (Unlike the heavy-duty
+ad-hoc C++ parser cited e.g. in Debdatta Basu's example (https://stackoverflow.com/a/23404302/1479945), 
+which doesn't even achieve that much more than the simple C version in the end.)
+
+The smoke-test examples compile just fine with C++11.
 
 
 Changes to the original:
@@ -22,8 +24,6 @@ Changes to the original:
 
 TODO:
 
-- Use __VA_OPT__ now to eliminate those ugly trailing commas.
-- Test/add enum class support.
-- Test/add enum-in-a-class support.
-  -> Can't do either implicitly. Would require shifting to C++;
-     either -> enumfactory.hpp, or enumfactory++.h
+- Test/add enum class support
+- Test/add enum-in-a-class support
+  -> Would obviously require shifting to "real" C++.
