@@ -1,12 +1,10 @@
 #include "xenum.hh"
 
 #define MyEnum(X)        \
-	X(First)         \
-	X(Second)        \
-	X(Fifty, 50)     \
-	X(OneMore, 100)
-	//!! Alas, this would err out for "duplicate `case` value":
-	//!!	X(OneMore, Second)
+	X(First),        \
+	X(Second),       \
+	X(Fifty, 50),    \
+	X(OneMore, Second) // This used to err out before v0.10, for "duplicate `case` value"!
 
 XENUM(MyEnum)
 

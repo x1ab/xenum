@@ -1,15 +1,14 @@
 #include "xenum.hh"
 
-#include <iostream>
-
 #define MemberEnum(def) \
-	def(A) def(B) def(C, 50) def(null, -1)
+	def(A), def(B), def(C, 50), def(null, -1)
 
 struct S {
 	XENUM(MemberEnum);
 };
 	XENUM(MemberEnum, .null = null); // Change it to differ from the in-class one, and then test it in main!
 
+#include <iostream>
 int main(int argc, char** argv)
 {
 	using namespace std;
