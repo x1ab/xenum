@@ -4,3 +4,8 @@
 *.out
 *.test
 *.i
+*.log
+out
+*.tmp
+*.old
+*.off

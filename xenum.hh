@@ -1,4 +1,4 @@
-/* Minimalist stringified C++ enums (v0.6, https://github.com/x1ab/xenum)
+/* Minimalist stringified C++ enums (v0.7, https://github.com/x1ab/xenum)
 
 	#include "xenum.hh"
 
@@ -9,7 +9,7 @@
 		X(NoGood, -1)	\
 
 	XENUM(MyEnum);
-	// Or: XENUM(MyEnum, {.null = NoGood}); // Optionally set what MyEnum_v("garbage") should return. Default: MyEnum{} (i.e. 0).
+	// Or: XENUM(MyEnum, .null = NoGood); // Optionally set what MyEnum_v("garbage") should return. Default: 0.
 */
 
 #ifndef ENUD47GYN5WYWT78C468UY0348UY899YC0R70MH87GN7GB5D43A
@@ -18,14 +18,15 @@
 #include <string.h>
 
 //--- API --------------------------------------------------------------------
+// Note: The cfg. struct can't be anon., C++ gets anal with that. (MSVC (and pro'ly GCC-ext.) flies through it just fine.)
 #define XENUM(EnumTypeName, ...) \
 	_xenum_DEFINE_THE_TYPE(enum, EnumTypeName) \
-	inline constexpr struct { EnumTypeName null = EnumTypeName{}; } _xenum_##EnumTypeName##_cfg __VA_ARGS__; \
+	struct _xenum_CPP_bullshit_##EnumTypeName##_Cfg { EnumTypeName null; }; inline static constexpr _xenum_CPP_bullshit_##EnumTypeName##_Cfg _xenum_##EnumTypeName##_cfg { __VA_ARGS__ }; \
 	_xenum_DEFINE_ACCESSORS(EnumTypeName, _xenum_##EnumTypeName##_cfg) \
 
 #define XENUM_CLASS(EnumTypeName, ...) \
 	_xenum_DEFINE_THE_TYPE(enum class, EnumTypeName) \
-	inline constexpr struct { EnumTypeName null = EnumTypeName{}; } _xenum_##EnumTypeName##_cfg __VA_ARGS__; \
+	struct _xenum_CPP_bullshit_##EnumTypeName##_Cfg { EnumTypeName null; }; inline static constexpr _xenum_CPP_bullshit_##EnumTypeName##_Cfg _xenum_##EnumTypeName##_cfg { __VA_ARGS__ }; \
 	_xenum_DEFINE_ACCESSORS(EnumTypeName, _xenum_##EnumTypeName##_cfg) \
 
 //--- Impl. ------------------------------------------------------------------
@@ -35,14 +36,14 @@
 	}; \
 
 #define _xenum_DEFINE_ACCESSORS(EnumTypeName, Cfg) \
-	inline const char* EnumTypeName##_cstr(auto value) { \
+	inline static const char* EnumTypeName##_cstr(auto value) { \
 		using enum EnumTypeName; \
 		switch (static_cast<EnumTypeName>(value)) { \
 			EnumTypeName(_xenum_ENUM_CASE) \
 			default: return ""; \
 		} \
 	} \
-	inline auto EnumTypeName##_v(const char *str) { \
+	inline static auto EnumTypeName##_v(const char *str) { \
 		using enum EnumTypeName; \
 		EnumTypeName(_xenum_ENUM_STRCMP) \
 		return Cfg.null; \

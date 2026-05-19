@@ -1,4 +1,4 @@
-﻿# Minimalist stringified C++ enums
+﻿# Minimalist stringified C++ enums in ~60 lines
 
 _(-> https://github.com/x1ab/xenum)_
 
@@ -25,8 +25,8 @@ The fallback value to return for invalid names can be customized. (The default i
 	#define MyEnum(X) X(First) X(Second) X(Fifty, 50) X(NoGood, -1) // You can replace X with anything if you prefer.
 	XENUM(MyEnum);
 	// Or XENUM_CLASS(MyEnum)
-	// Or XENUM(      MyEnum, {.null = NoGood}); // Optionally set what MyEnum_v("junk") should return. Default: 0.
-	// Or XENUM_CLASS(MyEnum, {.null = MyEnum::NoGood}); // Lame extra qualif. required by C++ for `enum class`.
+	// Or XENUM(      MyEnum, .null = NoGood); // Optionally set what MyEnum_v("junk") should return. Default: 0.
+	// Or XENUM_CLASS(MyEnum, .null = MyEnum::NoGood); // Lame extra qualif. required by C++ for `enum class`.
 
 
 	// Access:
@@ -48,7 +48,8 @@ The generated code would be sg. like this:
 ```
 	enum MyEnum { First, Second, Fifty = 50, };
 
-	inline constexpr struct { EnumTypeName null = EnumTypeName{}; } _xenum_MyEnum_cfg; // Or ..._cfg{.null = ...};
+	struct _xenum_MyEnum_Cfg { MyEnum null; }; // Alas, C++ won't let you init a var of it right away, so:
+	inline static constexpr _xenum_MyEnum_Cfg _xenum_MyEnum_cfg { }; // Or ...{ .null = ... };
 
 	inline const char* MyEnum_cstr(auto value) {
 		using enum MyEnum;
@@ -107,22 +108,24 @@ Changes to the original example:
 - `__VA_OPT__` trick to simplify assigning values
 - Scoped enum (`enum class`) support
 - Customizable default/invalid/null value (for converting from bad names)
+- Works both in global (namespace) scope and inside classes.
 
 
 ------------------------------------------------------------------------------
 
 ## TODO
 
-- Add enum-in-a-class support (-> How to (re)scope the conv. functions?)
-
 - Allow duplicate values! The current switch-based approach can't do it:
   ```
 	#define MyEnum(X) \
 		X(First)  \
 		X(Second) \
-		X(Other, Second) // This would err out with duplicate `case` value! :-/
+		X(Other, Second) // Would err out with duplicate `case` value! :-/
 
 	XENUM(MyEnum)
   ```
-  Simply turning it also to an if-chain (as in `<MyEnum>_v()`) would solve it, but
-  compilers may be more likely(?) to do lookup-table optim. for `switch`.
+  Simply turning it also to an if-chain (as in `<MyEnum>_v()`) would solve it,
+  but compilers may be more likely to do lookup-table optim. for `switch`.
+  Needs a dreaded config macro, probably.
+
+- Maybe there could be a way to support it also in local (block) scope.
