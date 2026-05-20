@@ -1,4 +1,4 @@
-/* Minimalist stringified C++ enums (v0.10, https://github.com/x1ab/xenum)
+/* Minimalist stringified C++ enums (v0.12, https://github.com/x1ab/xenum)
 
 	#include "xenum.hh"
 
@@ -6,7 +6,7 @@
 		X(First),       \
 		X(Second),      \
 		X(WithVal, 50), \
-		X(NoGood, -1)
+		X(NoGood, -1)     // A trailing , is also fine.
 
 	XENUM(MyEnum);
 	// Or: XENUM(MyEnum, .null = NoGood); // Optionally set what MyEnum_v("garbage") should return. Default: 0.
@@ -46,13 +46,13 @@
 	struct _xenum_##EnumTypeName##_Pair { const char* s; EnumTypeName v; /* In this order to manage padding, just to pacify MSVC /Wall... */ \
 		 _XENUM_NO_UNIQUE_ADDRESS _xenum_::Pad<(sizeof(const char*) > sizeof(EnumTypeName)) ? sizeof(const char*) - sizeof(EnumTypeName) : 0> _pad{}; \
 	}; \
-	inline static const char* EnumTypeName##_cstr(auto value) { \
+	[[maybe_unused]] inline static const char* EnumTypeName##_cstr(auto value) { \
 		using enum EnumTypeName; \
 		static constexpr _xenum_##EnumTypeName##_Pair pairs[] = { EnumTypeName(_xenum_ENUM_PAIR) }; \
 		for (const auto& p : pairs) { if (p.v == static_cast<EnumTypeName>(value)) return p.s; } \
 		return ""; \
 	} \
-	inline static auto EnumTypeName##_v(const char *str) { \
+	[[maybe_unused]] inline static auto EnumTypeName##_v(const char *str) { \
 		using enum EnumTypeName; \
 		static constexpr _xenum_##EnumTypeName##_Pair pairs[] = { EnumTypeName(_xenum_ENUM_PAIR) }; \
 		for (const auto& p : pairs) { if (!strcmp(p.s, str)) return p.v; } \

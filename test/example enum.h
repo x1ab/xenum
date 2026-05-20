@@ -6,7 +6,7 @@
 	X(Fifty, 50),    \
 	X(OneMore, Second) // This used to err out before v0.10, for "duplicate `case` value"!
 
-XENUM(MyEnum)
+XENUM(MyEnum);
 
 // Or, customized (with non-0 default/fallback value):
 //XENUM(MyEnum, .null = -1) // Won't compile! (Kinda fair, but MyEnum{} would, even if no item is 0...)
