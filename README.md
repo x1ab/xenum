@@ -153,4 +153,4 @@ Improvements to the original example (and some other related ones):
     inconsistent behavior!
 
 - Maybe there could be a way to support it also in local (block) scope?
-  (Not really worth the hassle though, of course.)
+  (But... U f'n kidding me??... C++ reflections is right around the corner now.)
