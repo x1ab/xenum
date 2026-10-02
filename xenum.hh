@@ -1,4 +1,4 @@
-/* Minimalist stringified C++ enums (v0.12, https://github.com/x1ab/xenum)
+/* Minimalist stringified C++ enums (v0.13, https://github.com/x1ab/xenum)
 
 	#include "xenum.hh"
 
@@ -39,7 +39,7 @@
 	#else
 	# define _XENUM_NO_UNIQUE_ADDRESS [[no_unique_address]]
 	#endif
-	namespace _xenum_ { template <int N> struct Pad { char _[N]; };
+	namespace _xenum_ { template <int N> struct Pad { char _padding_[N]; };
 	                    template <>      struct Pad<0> {}; }
 
 #define _xenum_DEFINE_ACCESSORS(EnumTypeName, Cfg) \

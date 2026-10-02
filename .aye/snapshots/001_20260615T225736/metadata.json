@@ -1,0 +1,10 @@
+{
+  "timestamp": "20260615T225736",
+  "files": [
+    {
+      "original": "C:\\sz\\prj\\xenum\\tutorial_example.py",
+      "snapshot": "C:\\sz\\prj\\xenum\\.aye\\snapshots\\001_20260615T225736\\tutorial_example.py"
+    }
+  ],
+  "prompt": "change the function to print HELLO WORLD in all caps"
+}
